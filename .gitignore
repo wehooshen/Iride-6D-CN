@@ -1,0 +1,14 @@
+build/
+*.o
+*.mo
+*.d
+*.dep
+simulator/out/
+simulator/png/
+simulator/preview
+__pycache__/
+*.zip
+simulator/preview_asan
+simulator/sheets/
+site/iride.js
+site/iride.wasm

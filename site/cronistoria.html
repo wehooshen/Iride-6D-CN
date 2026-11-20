@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cronistoria di Iride 6D</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Lo schermo della 6D con Iride: nero, grigi caldi, arancione di Iride. Una colonna del tempo a sinistra,
+   le versioni come fotogrammi di un rullino. Tema unico, scelto. */
+:root {
+  --bg: #0d0d0f;
+  --panel: #17171a;
+  --line: #2a2a2f;
+  --text: #e8e8ea;
+  --dim: #9a9aa2;
+  --film: #1f1a14;
+  --accent: #ff8c00;
+  --ok: #4fc06a;
+  --err: #ec4b43;
+  --redo: #6fa8ff;
+  --mod: #b9b6b0;
+  --display: "Archivo Narrow", "Arial Narrow", sans-serif;
+  --body: "IBM Plex Sans", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--body); font-size: 16px; line-height: 1.5; }
+a { color: var(--accent); }
+.wrap { max-width: 1040px; margin: 0 auto; padding: 32px 20px 64px; }
+
+header { display: grid; gap: 18px; border-bottom: 2px solid var(--accent); padding-bottom: 24px; }
+.brand { font-family: var(--display); font-weight: 700; letter-spacing: .02em; color: var(--accent); font-size: 15px; text-transform: uppercase; }
+h1 { font-family: var(--display); font-size: clamp(34px, 6vw, 56px); line-height: 1.02; margin: 0; text-wrap: balance; font-weight: 700; }
+.lede { color: var(--dim); max-width: 64ch; margin: 0; }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.tile { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+.tile b { display: block; font-family: var(--display); font-size: 34px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.tile span { color: var(--dim); font-size: 13px; }
+.tile.err b { color: var(--err); } .tile.ok b { color: var(--ok); } .tile.redo b { color: var(--redo); } .tile.acc b { color: var(--accent); }
+
+section.chart { margin-top: 28px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px 16px 8px; }
+section.chart h2, .phase h2 { font-family: var(--display); font-weight: 700; margin: 0 0 4px; font-size: 22px; }
+.sub { color: var(--dim); font-size: 14px; margin: 0 0 10px; }
+.chartbox { overflow-x: auto; }
+svg text { font-family: var(--mono); font-size: 11px; fill: var(--dim); }
+
+.filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 30px 0 6px; align-items: center; }
+.filters span { color: var(--dim); font-size: 14px; margin-right: 4px; }
+.filters button { font: 500 14px var(--body); background: var(--panel); color: var(--text); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; cursor: pointer; display: inline-flex; gap: 8px; align-items: center; }
+.filters button[aria-pressed="true"] { border-color: var(--accent); background: #2a1e10; }
+.filters button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+
+.phase { position: relative; margin-top: 34px; padding-left: 30px; }
+.phase::before { content: ""; position: absolute; left: 9px; top: 6px; bottom: -34px; width: 2px; background: var(--line); }
+.phase:last-of-type::before { bottom: 0; }
+.phase > .pin { position: absolute; left: 0; top: 4px; width: 20px; height: 20px; border-radius: 50%; background: var(--bg); border: 3px solid var(--accent); }
+.when { font-family: var(--mono); color: var(--accent); font-size: 13px; letter-spacing: .03em; }
+
+.ver { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; margin-top: 12px; overflow: hidden; }
+.ver header { all: unset; display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: baseline; padding: 10px 14px; border-bottom: 1px solid var(--line); background: #141416; }
+.ver .num { font-family: var(--display); font-weight: 700; font-size: 20px; color: var(--text); min-width: 52px; }
+.ver .title { font-weight: 600; }
+.ver .tests { margin-left: auto; font-family: var(--mono); font-size: 12px; color: var(--dim); font-variant-numeric: tabular-nums; }
+.ver ul { list-style: none; margin: 0; padding: 6px 14px 10px; display: grid; gap: 6px; }
+.ver li { display: grid; grid-template-columns: 86px 1fr; gap: 10px; align-items: baseline; font-size: 15px; }
+.chip { font: 600 11px var(--mono); letter-spacing: .05em; text-transform: uppercase; border-radius: 4px; padding: 2px 6px; text-align: center; border: 1px solid; }
+.k-ok .chip { color: var(--ok); border-color: #2c5a37; background: #13241a; }
+.k-err .chip { color: var(--err); border-color: #6a2622; background: #2a1312; }
+.k-fix .chip { color: #ffb15c; border-color: #6a4517; background: #2a1d0e; }
+.k-redo .chip { color: var(--redo); border-color: #2c4670; background: #121c2c; }
+.k-mod .chip { color: var(--mod); border-color: #3a3936; background: #1d1d1f; }
+.k-err { color: #ffd9d6; }
+li.hide, .ver.hide, .phase.hide { display: none; }
+
+.lessons { margin-top: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+.lessons div { background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 8px; padding: 12px 14px; }
+.lessons h3 { margin: 0 0 4px; font-family: var(--display); font-size: 18px; }
+.lessons p { margin: 0; color: var(--dim); font-size: 14px; }
+footer { margin-top: 40px; color: var(--dim); font-size: 13px; border-top: 1px solid var(--line); padding-top: 14px; }
+
+/* barra in alto: torna alla demo e al repository */
+.top { display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; align-items: center; margin-bottom: 22px; }
+.top .logo { font-family: var(--display); font-weight: 700; font-size: 22px; letter-spacing: .04em; text-decoration: none; color: var(--text); }
+.top .logo span { color: var(--accent); }
+.top nav { display: flex; gap: 8px; flex-wrap: wrap; }
+.top nav a { text-decoration: none; color: var(--text); background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; font-size: 14px; }
+.top nav a.primary { border-color: var(--accent); color: var(--accent); }
+.top nav a:focus-visible, .days a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* salto ai giorni: una striscia di pellicola con i fotogrammi */
+.days { position: sticky; top: 0; z-index: 5; margin: 26px -20px 0; padding: 10px 20px; background: rgba(13,13,15,.94);
+        backdrop-filter: blur(6px); border-bottom: 1px solid var(--line); display: flex; gap: 6px; overflow-x: auto; }
+.days a { flex: 0 0 auto; text-decoration: none; color: var(--dim); font: 500 13px var(--mono); padding: 5px 10px; border-radius: 6px; border: 1px solid var(--line); background: var(--panel); }
+.days a:hover { color: var(--text); border-color: var(--accent); }
+
+/* intestazione della giornata come un pezzo di pellicola con le perforazioni */
+.strip { position: relative; background: var(--film); border-radius: 8px; padding: 18px 16px; margin-left: -6px;
+         border: 1px solid #3a2d1c; }
+.strip::before, .strip::after { content: ""; position: absolute; left: 10px; right: 10px; height: 6px;
+         background: repeating-linear-gradient(90deg, #0d0d0f 0 10px, transparent 10px 22px); border-radius: 2px; }
+.strip::before { top: 5px; } .strip::after { bottom: 5px; }
+.strip .when { display: block; }
+.strip h2 { margin: 2px 0 0; }
+.phase { scroll-margin-top: 64px; }
+
+@media (max-width: 560px) {
+  .ver li { grid-template-columns: 1fr; gap: 2px; }
+  .chip { justify-self: start; }
+  .ver .tests { margin-left: 0; width: 100%; }
+}
+@media (prefers-reduced-motion: no-preference) { .filters button { transition: background .15s, border-color .15s; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="top">
+  <a class="logo" href="./">IRIDE <span>6D</span></a>
+  <nav aria-label="Collegamenti">
+    <a class="primary" href="./">&#9654; Prova la demo</a>
+    <a href="https://github.com/GodEater58/Iride-6D">Codice su GitHub</a>
+    <a href="https://github.com/GodEater58/Iride-6D/releases/latest">Ultima release</a>
+  </nav>
+</div>
+<header>
+  <div class="brand">Cronistoria · firmware per Canon EOS 6D</div>
+  <h1 id="h1">Dalla 0.1 alla 1.6, in cinque giorni</h1>
+  <p class="lede">Tutte le versioni, dal primo modulo sopra Magic Lantern al firmware con il core modificato, la demo nel browser e l'inglese. Con quello che è andato bene, quello che si è rotto e quello che è stato rifatto da capo.</p>
+  <div class="tiles" aria-label="Numeri del progetto">
+    <div class="tile acc"><b id="n-ver">28</b><span>versioni pubblicate</span></div>
+    <div class="tile ok"><b id="n-test">0 → 211</b><span>test sul simulatore</span></div>
+    <div class="tile"><b id="n-righe">11.400</b><span>righe del modulo Iride</span></div>
+    <div class="tile err"><b id="n-err">0</b><span>errori trovati e corretti</span></div>
+    <div class="tile redo"><b id="n-redo">0</b><span>rifacimenti da capo</span></div>
+  </div>
+</header>
+
+<section class="chart" aria-labelledby="ch-t">
+  <h2 id="ch-t">I test crescono con le funzioni</h2>
+  <p class="sub">Test del simulatore a ogni versione: ogni bug corretto ha lasciato un test che lo ricontrolla.</p>
+  <div class="chartbox"><svg id="chart" viewBox="0 0 980 230" width="980" height="230" role="img" aria-label="Numero di test per versione, da 0 nella 0.1 a 211 nella 1.6"></svg></div>
+</section>
+
+<div class="filters" role="group" aria-label="Mostra">
+  <span>Mostra:</span>
+  <button id="f-all" aria-pressed="true" data-f="all">Tutto</button>
+  <button id="f-ok" aria-pressed="false" data-f="k-ok"><i class="dot" style="background:var(--ok)"></i>Novità</button>
+  <button id="f-err" aria-pressed="false" data-f="k-err"><i class="dot" style="background:var(--err)"></i>Errori</button>
+  <button id="f-redo" aria-pressed="false" data-f="k-redo"><i class="dot" style="background:var(--redo)"></i>Rifacimenti</button>
+  <button id="f-mod" aria-pressed="false" data-f="k-mod"><i class="dot" style="background:var(--mod)"></i>Modifiche</button>
+</div>
+
+<nav class="days" id="days" aria-label="Vai al giorno"></nav>
+<main id="timeline"></main>
+
+<section class="lessons" aria-label="Cosa ha insegnato">
+  <div><h3>La 6D vera trova cose che il PC non vede</h3><p>Il ciclo del Live View col cambio di rullino, il "%" che spostava i valori nella Prova della 6D, le lettere piccole lente: tutti scoperti sulla macchina o coi suoi tempi.</p></div>
+  <div><h3>Ogni bug lascia un test</h3><p>Da 49 a 211 test: tasti a caso con AddressSanitizer, casi estremi di date e luoghi, testi fuori dallo schermo, anche in inglese.</p></div>
+  <div><h3>I caratteri veri contano</h3><p>Passando ai caratteri RBF di Magic Lantern sono usciti quattro testi che sulla 6D andavano oltre il loro spazio.</p></div>
+  <div><h3>Le release si rompono in modi nuovi</h3><p>Tag su un commit rotto, tag rifiutati dalla sessione, caricamenti bloccati: ora basta un clic su Run workflow.</p></div>
+</section>
+
+<footer>Fonti: il <a href="https://github.com/GodEater58/Iride-6D/blob/main/CHANGELOG.md">CHANGELOG</a> e la cronologia dei commit di GodEater58/Iride-6D (prima GodEater58/Inquadra), e le conversazioni di lavoro. Il core modificato della 1.4 non è ancora stato provato su una 6D vera: la lista è in docs/PROVA_6D.md.</footer>
+</div>
+
+<script src="cronistoria-data.js"></script>
+<script>
+/* k: ok = novita', err = errore, fix = correzione di un errore (conta come errore), redo = rifatto da capo, mod = modifica */
+const D = window.CRONISTORIA;
+const PHASES = D.fasi;
+
+const LABEL = { ok: "nuovo", err: "errore", fix: "corretto", redo: "rifatto", mod: "modifica" };
+const main = document.getElementById("timeline");
+let nErr = 0, nRedo = 0, dayN = 0;
+const days = document.getElementById("days");
+for (const p of PHASES) {
+  const sec = document.createElement("section");
+  sec.className = "phase";
+  sec.id = "giorno-" + (++dayN);
+  sec.innerHTML = `<i class="pin" aria-hidden="true"></i><div class="strip"><span class="when">${p.when}</span><h2>${p.title}</h2></div>`;
+  const a = document.createElement("a");
+  a.href = "#" + sec.id; a.textContent = p.when.replace(" · ", " ");
+  days.appendChild(a);
+  for (const v of p.vers) {
+    const art = document.createElement("article");
+    art.className = "ver";
+    const tests = v.tests !== null ? `${v.tests} test` : "";
+    art.innerHTML = `<header><span class="num">${v.v}</span><span class="title">${v.t}</span><span class="tests">${tests}</span></header>`;
+    const ul = document.createElement("ul");
+    for (const [k, txt] of v.items) {
+      if (k === "err") nErr++;
+      if (k === "redo") nRedo++;
+      const li = document.createElement("li");
+      li.className = "k-" + (k === "fix" ? "err" : k) + (k === "fix" ? " k-fix" : "");
+      li.innerHTML = `<span class="chip">${LABEL[k]}</span><span>${txt}</span>`;
+      ul.appendChild(li);
+    }
+    art.appendChild(ul);
+    sec.appendChild(art);
+  }
+  main.appendChild(sec);
+}
+document.getElementById("n-err").textContent = nErr;
+const PAROLE = ["", "un giorno", "due giorni", "tre giorni", "quattro giorni", "cinque giorni", "sei giorni", "sette giorni"];
+document.getElementById("h1").textContent = `Dalla ${D.prima} alla ${D.ultima}, in ${PAROLE[D.giorni] || D.giorni + " giorni"}`;
+document.title = "Cronistoria di Iride 6D";
+document.getElementById("n-ver").textContent = D.versioni;
+document.getElementById("n-test").textContent = "0 → " + D.test;
+document.getElementById("n-righe").textContent = D.righe.toLocaleString("it-IT");
+document.querySelector("#chart").setAttribute("aria-label", "Numero di test per versione, da 0 a " + D.test);
+document.getElementById("n-redo").textContent = nRedo;
+
+/* filtro: nasconde righe, versioni e giornate rimaste vuote */
+document.querySelectorAll(".filters button").forEach(b => b.addEventListener("click", () => {
+  document.querySelectorAll(".filters button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+  const f = b.dataset.f;
+  document.querySelectorAll(".ver li").forEach(li => li.classList.toggle("hide", f !== "all" && !li.classList.contains(f)));
+  document.querySelectorAll(".ver").forEach(v => v.classList.toggle("hide", !v.querySelector("li:not(.hide)")));
+  document.querySelectorAll(".phase").forEach(s => s.classList.toggle("hide", !s.querySelector(".ver:not(.hide)")));
+}));
+
+/* grafico dei test: solo le versioni con un numero noto */
+(function () {
+  /* le versioni con il numero di test noto (le altre non l'hanno cambiato) */
+  const pts = [];
+  for (const p of PHASES) for (const v of p.vers) if (v.tests !== null && v.tests !== undefined) pts.push([v.v, v.tests]);
+  const top = Math.max(...pts.map(p => p[1]));
+  const W = 980, H = 230, L = 44, R = 34, T = 18, B = 34, max = Math.ceil(top / 60 + 0.4) * 60;
+  const x = i => L + i * (W - L - R) / (pts.length - 1), y = v => T + (H - T - B) * (1 - v / max);
+  let s = "";
+  for (let g = 0; g <= max; g += 60) s += `<line x1="${L}" x2="${W - R}" y1="${y(g)}" y2="${y(g)}" stroke="#2c2c30"/><text x="${L - 8}" y="${y(g) + 4}" text-anchor="end">${g}</text>`;
+  const line = pts.map((p, i) => `${x(i)},${y(p[1])}`).join(" ");
+  s += `<polygon points="${x(0)},${y(0)} ${line} ${x(pts.length - 1)},${y(0)}" fill="#ff8c00" fill-opacity=".12"/>`;
+  s += `<polyline points="${line}" fill="none" stroke="#ff8c00" stroke-width="2.5" stroke-linejoin="round"/>`;
+  pts.forEach((p, i) => {
+    const last = i === pts.length - 1;
+    s += `<circle cx="${x(i)}" cy="${y(p[1])}" r="${last ? 5.5 : 3}" fill="${last ? "#ff8c00" : "#0d0d0e"}" stroke="#ff8c00" stroke-width="2"/>`;
+    if (pts.length <= 24 || i % 2 === 0 || last) s += `<text x="${x(i)}" y="${H - 12}" text-anchor="middle">${p[0]}</text>`;
+  });
+  s += `<text x="${x(pts.length - 1) - 10}" y="${y(top) - 10}" text-anchor="end" style="fill:#ecebe8;font-size:12px">${top}</text>`;
+  document.getElementById("chart").innerHTML = s;
+})();
+</script>
+</body>
+</html>
