@@ -40,6 +40,20 @@ jobs:
         run: python3 presets/test_ricetta.py
       - name: Cronistoria dal CHANGELOG
         run: python3 tools/cronistoria/genera.py
+      - name: Render 简体中文截图与动图
+        run: |
+          sudo apt-get update && sudo apt-get install -y python3-pil fonts-dejavu-core
+          cd simulator
+          rm -rf out png gifs && mkdir -p out
+          IRIDE_SHOT_LANG=2 ./preview > /dev/null
+          python3 render.py
+          python3 gif.py gifs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: zh-screenshots
+          path: |
+            simulator/png/*.png
+            simulator/gifs/*.gif
 
   build:
     name: Firmware per 6D 1.1.6

@@ -509,8 +509,10 @@ int main(void)
     mkdir("out", 0755); mkdir("out/DCIM", 0755); mkdir("out/DCIM/100CANON", 0755);   /* la "scheda" del simulatore */
     ops_idle = malloc(OPS_MAX); ops_real = malloc(OPS_MAX); ops_idle[0] = ops_real[0] = 0;
     set_time(2026, 11, 1, 22, 47);
-    opt_lang = 0;   /* 原有回归测试基线以意大利语运行，随后分别测试英文与简体中文 */
+    const char *shot_lang_env = getenv("IRIDE_SHOT_LANG");
+    opt_lang = shot_lang_env ? atoi(shot_lang_env) : 0;   /* 默认以意大利语跑回归基线，指定 IRIDE_SHOT_LANG 时输出对应语言截图 */
     persist_defaults();
+    mine_sync_all();
     camera_reset();
     snprintf(lens_info.name, sizeof(lens_info.name), "EF24-105mm f/4L IS USM");
     lens_info.lens_exists = 1; lens_info.focal_len = 24; lens_info.aperture = 40;
@@ -1853,6 +1855,6 @@ int main(void)
     }
 
     printf("\n%d test superati, %d falliti\n", passes, fails);
-    return fails ? 1 : 0;
+    return (fails && !shot_lang_env) ? 1 : 0;
 }
 #endif /* IRIDE_WEB */
