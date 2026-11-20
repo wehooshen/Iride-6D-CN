@@ -126,11 +126,13 @@ jobs:
           awk -v v="$V" 'index($0, "## " v " ")==1 {f=1; next} /^## /{f=0} f' CHANGELOG.md > notes.md
           {
             echo
-            echo "**Aggiornare:** dalla 1.4 in poi basta \`iride.mo\` nella cartella \`ML/modules\` della scheda; da una 1.3 o precedente copia anche \`autoexec.bin\` (Magic Lantern modificato per Iride). Impostazioni e rullini restano."
+            echo "**简体中文版说明：** 默认启用简体中文界面（内置按需裁剪的 Noto Sans SC 4 级抗锯齿位图字库），可在 **选项 › 语言 / Language** 中随时切换简体中文 / English / italiano。"
             echo
-            echo "**Prima installazione:** firmware Canon 1.1.6, poi il contenuto di \`Iride6D-$V-SD.zip\` nella radice della scheda (vedi LEGGIMI.txt)."
+            echo "**老版本升级：** 1.4 及以上版本仅需覆盖 SD 卡 \`ML/modules/iride.mo\`；从 1.3 或更早版本升级请同时覆盖 \`autoexec.bin\`（Iride 定制核心）。胶卷进度与配置方案不会丢失。"
             echo
-            echo "**Preset pellicola:** \`Iride6D-preset-pellicole.zip\` per LightCraft e Lightroom (Importa predefiniti)."
+            echo "**首次安装：** 确认 EOS 6D 为佳能原厂固件 **1.1.6**，将 \`Iride6D-$V-SD.zip\` 内全部文件解压到 SD 卡根目录并按 \`LEGGIMI.txt\` 执行固件更新。"
+            echo
+            echo "**胶片预设：** \`Iride6D-preset-pellicole.zip\` 适用于 LightCraft 与 Lightroom（导入预设）。"
           } >> notes.md
       - name: Pubblica
         env:
@@ -147,5 +149,5 @@ jobs:
             fi
           else
             # dal clic su Run workflow: il tag nasce qui, sul commit appena compilato
-            gh release create "$TAG" rel/* --target "$GITHUB_SHA" --title "Iride 6D ${TAG#[vV]}" --notes-file notes.md --latest
+            gh release create "$TAG" rel/* --target "$GITHUB_SHA" --title "Iride 6D ${TAG#[vV]} 简体中文版" --notes-file notes.md --latest
           fi
