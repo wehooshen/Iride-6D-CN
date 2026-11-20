@@ -1,8 +1,8 @@
 # Iride 6D（简体中文版）
 
-[![在线浏览器体验](https://img.shields.io/badge/%E2%96%B6%20%E5%9C%A8%E7%BA%BF%E4%BD%93%E9%AA%8C-Iride%206D-ff8c00?style=for-the-badge)](https://wehooshen.github.io/Iride-6D/)
-[![Release](https://img.shields.io/github/v/release/wehooshen/Iride-6D?style=for-the-badge&label=release&color=2a2a2f)](https://github.com/wehooshen/Iride-6D/releases/latest)
-[![Build](https://img.shields.io/github/actions/workflow/status/wehooshen/Iride-6D/build.yml?style=for-the-badge&label=%E6%B5%8B%E8%AF%95%E4%B8%8E%E5%9B%BA%E4%BB%B6%E6%9E%84%E5%BB%BA)](https://github.com/wehooshen/Iride-6D/actions/workflows/build.yml)
+[![在线浏览器体验](https://img.shields.io/badge/%E2%96%B6%20%E5%9C%A8%E7%BA%BF%E4%BD%93%E9%AA%8C-Iride%206D-ff8c00?style=for-the-badge)](https://wehooshen.github.io/Iride-6D-CN/)
+[![Release](https://img.shields.io/github/v/release/wehooshen/Iride-6D-CN?style=for-the-badge&label=release&color=2a2a2f)](https://github.com/wehooshen/Iride-6D-CN/releases/latest)
+[![Build](https://img.shields.io/github/actions/workflow/status/wehooshen/Iride-6D-CN/build.yml?style=for-the-badge&label=%E6%B5%8B%E8%AF%95%E4%B8%8E%E5%9B%BA%E4%BB%B6%E6%9E%84%E5%BB%BA)](https://github.com/wehooshen/Iride-6D-CN/actions/workflows/build.yml)
 
 **面向 Canon EOS 6D（佳能原厂固件 1.1.6）的定制固件**：基于为 Iride 定制修改的 [Magic Lantern](https://www.magiclantern.fm/) 核心与 Iride 独立模块。
 提供流畅的全屏动画界面，内置**天文摄影**、**进阶摄影**、拟真**胶卷模拟**与**配置方案**四大核心专区，并支持一键恢复 6D 原始状态。界面内置**简体中文**（默认）、**英文**与**意大利语**（可在 **选项 › 语言 / Language** 中随时切换），内置按需裁剪的思源黑体（Noto Sans SC）4 级抗锯齿位图字库，在 6D 真机、PC 模拟器与浏览器中均可清晰显示中文。
@@ -11,8 +11,8 @@
 
 > ⚠️ **实验性软件提示：** 已在实机 EOS 6D 上验证胶卷模拟与自定义文件命名，其余功能通过同源 C 模拟器（211+ 项自动化测试）并针对 6D 1.1.6 固件编译验证。使用风险自负。本项目与佳能（Canon）无任何关联。
 
-<p align="center"><a href="https://wehooshen.github.io/Iride-6D/"><img src="docs/screenshots/animazioni-v16.gif" width="540" alt="启动、主页、胶卷架与弹窗动画"></a><br>
-<b><a href="https://wehooshen.github.io/Iride-6D/">▶ 在浏览器中体验</a></b>：运行与 EOS 6D 真机完全一致的 C 代码（WebAssembly），支持键盘或机身按键操作。</p>
+<p align="center"><a href="https://wehooshen.github.io/Iride-6D-CN/"><img src="docs/screenshots/animazioni-v16.gif" width="540" alt="启动、主页、胶卷架与弹窗动画"></a><br>
+<b><a href="https://wehooshen.github.io/Iride-6D-CN/">▶ 在浏览器中体验</a></b>：运行与 EOS 6D 真机完全一致的 C 代码（WebAssembly），支持键盘或机身按键操作。</p>
 
 <details>
 <summary><b>全部界面截图</b>（点击展开）</summary>
@@ -27,7 +27,6 @@
 | ![配置方案](docs/screenshots/17_profili-v16.png) | ![选项](docs/screenshots/18_opzioni-v16.png) | ![ND 减光镜](docs/screenshots/12_filtri_nd-v16.png) |
 | ![白平衡](docs/screenshots/27_bianco-v16.png) | ![摄影菜单](docs/screenshots/08b_foto_bianco-v16.png) | ![拍后暗场建议](docs/screenshots/04e_dark_fine_sessione-v16.png) |
 | ![我的胶片](docs/screenshots/14e_rullini_mie-v16.png) | ![自定义配方](docs/screenshots/14f_tua_pellicola-v16.png) | ![长曝降噪提醒](docs/screenshots/04d_intervallometro_lenr-v16.png) |
-| ![英文主页](docs/screenshots/en_home-v16.png) | ![英文间隔拍摄](docs/screenshots/en_intervallometro-v16.png) | |
 
 </details>
 
